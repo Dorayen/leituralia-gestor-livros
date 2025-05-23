@@ -4,10 +4,7 @@ import com.biblioteca.leituralia.dto.LivroDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/leituralia")
@@ -26,6 +23,13 @@ public class LeituraliaController {
         Livro salvo = service.salvar(livro);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(modelMapper.map(salvo, LivroDto.class));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LivroDto>  exibirLivroPorId(@PathVariable Long id) {
+        Livro livro = service.buscarLivroPorID(id);
+        LivroDto dto = modelMapper.map(livro, LivroDto.class);
+        return ResponseEntity.ok(dto);
     }
 
 }
