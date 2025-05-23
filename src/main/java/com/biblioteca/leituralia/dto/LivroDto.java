@@ -7,7 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LivroDto {
-    @NonNull
     private Long id;
     private String titulo;
     private String autor;

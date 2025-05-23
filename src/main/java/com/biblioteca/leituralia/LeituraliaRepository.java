@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface LeituraliaRepository extends JpaRepository<Livro, UUID> {
+public interface LeituraliaRepository extends JpaRepository<Livro, Long> {
 }

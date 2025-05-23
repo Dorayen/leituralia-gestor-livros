@@ -1,6 +1,6 @@
 package com.biblioteca.leituralia;
 
-import com.biblioteca.leituralia.dto.LivroDto;
+import com.biblioteca.leituralia.exception.LivroJaCadastradoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,29 +10,11 @@ public class LeituraliaService {
     private final LeituraliaRepository repository;
 
 
-    private Livro paraEntity(LivroDto livroDto) {
-        return Livro.builder()
-                .id(livroDto.getId())
-                .titulo(livroDto.getTitulo())
-                .autor(livroDto.getAutor())
-                .categoria(livroDto.getCategoria())
-                .anoPublicacao(livroDto.getAnoPublicacao())
-                .build();
-    }
+    public Livro salvar(Livro livro) {
+        if (livro.getId() != null && repository.existsById(livro.getId())) {
+            throw new LivroJaCadastradoException("Livro já foi cadastrado");
+        }
 
-    private LivroDto paraDto(Livro livro) {
-        return LivroDto.builder()
-                .id(livro.getId())
-                .titulo(livro.getTitulo())
-                .autor(livro.getAutor())
-                .categoria(livro.getCategoria())
-                .anoPublicacao(livro.getAnoPublicacao())
-                .build();
-    }
-
-
-    public LivroDto salvar(LivroDto dto) {
-        Livro cadastrado = repository.save(paraEntity(dto));
-        return paraDto(cadastrado);
+        return repository.save(livro);
     }
 }
