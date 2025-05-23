@@ -44,4 +44,8 @@ public class LeituraliaService {
 
         return repository.save(existente);
     }
+
+    public void deletarLivro(Long id) {
+        repository.deleteById(id);
+    }
 }

@@ -50,4 +50,10 @@ public class LeituraliaController {
         LivroDto resposta = modelMapper.map(livroatualizado, LivroDto.class);
         return ResponseEntity.ok(resposta);
     }
+
+    @DeleteMapping({"/{id}"})
+    public void deletarLivro(@PathVariable Long id) {
+        service.deletarLivro(id);
+    }
+
 }
