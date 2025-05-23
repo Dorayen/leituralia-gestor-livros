@@ -5,6 +5,7 @@ import com.biblioteca.leituralia.exception.LivroNaoEcontradoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,5 +28,9 @@ public class LeituraliaService {
         } else {
             throw new LivroNaoEcontradoException("Usuário não encontrado");
         }
+    }
+
+    public List<Livro> listarTodos() {
+        return repository.findAll();
     }
 }

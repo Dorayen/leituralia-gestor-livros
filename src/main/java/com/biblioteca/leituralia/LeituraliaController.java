@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/leituralia")
 public class LeituraliaController {
@@ -32,4 +35,12 @@ public class LeituraliaController {
         return ResponseEntity.ok(dto);
     }
 
+    @GetMapping
+    public ResponseEntity<List<LivroDto>> listarLivros() {
+        List<LivroDto> dtos=  service.listarTodos()
+                .stream()
+                .map(livro -> modelMapper.map(livro, LivroDto.class))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dtos);
+    }
 }
