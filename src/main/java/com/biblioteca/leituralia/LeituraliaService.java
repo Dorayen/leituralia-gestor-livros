@@ -33,4 +33,15 @@ public class LeituraliaService {
     public List<Livro> listarTodos() {
         return repository.findAll();
     }
+
+    public Livro atualizarLivro(Long id, Livro livro) {
+        Livro existente = buscarLivroPorID(id);
+
+        existente.setTitulo(livro.getTitulo());
+        existente.setAutor(livro.getAutor());
+        existente.setCategoria(livro.getCategoria());
+        existente.setAnoPublicacao(livro.getAnoPublicacao());
+
+        return repository.save(existente);
+    }
 }

@@ -43,4 +43,11 @@ public class LeituraliaController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
     }
+    @PutMapping("/{id}")
+    public ResponseEntity<LivroDto>  atualizarLivro(@PathVariable Long id, @RequestBody LivroDto dto) {
+        Livro livro = modelMapper.map(dto, Livro.class);
+        Livro livroatualizado = service.atualizarLivro(id, livro);
+        LivroDto resposta = modelMapper.map(livroatualizado, LivroDto.class);
+        return ResponseEntity.ok(resposta);
+    }
 }
