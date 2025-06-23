@@ -49,4 +49,15 @@ public class EditoraService {
                 .map(this::toDtoResponse)
                 .collect(Collectors.toList());
     }
+
+    public EditoraDtoResponse atualizarEditora(Long id, EditoraDtoRequest dtoRequest) {
+        Editora existente = repository.findById(id)
+                .orElseThrow(() -> new EditoraNaoEncontradaException("Editora não encontrada"));
+
+        existente.setNome(dtoRequest.getNome());
+        existente.setCidade(dtoRequest.getCidade());
+
+        Editora atualizada = repository.save(existente);
+        return toDtoResponse(atualizada);
+    }
 }

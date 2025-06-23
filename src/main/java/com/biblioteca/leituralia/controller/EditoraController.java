@@ -30,4 +30,11 @@ public class EditoraController {
     public ResponseEntity<List<EditoraDtoResponse>> listarEditoras(){
         return ResponseEntity.ok(service.listarTodos());
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EditoraDtoResponse> atualizarEditora(@PathVariable Long id, EditoraDtoRequest dtoRequest){
+        EditoraDtoResponse editoraAtualizada= service.atualizarEditora(id,dtoRequest);
+        return ResponseEntity.ok(editoraAtualizada);
+    }
+    
 }
