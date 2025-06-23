@@ -1,7 +1,8 @@
-package com.biblioteca.leituralia;
+package com.biblioteca.leituralia.controller;
 
 import com.biblioteca.leituralia.dto.LivroDtoRequest;
 import com.biblioteca.leituralia.dto.LivroDtoResponse;
+import com.biblioteca.leituralia.service.LeituraliaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

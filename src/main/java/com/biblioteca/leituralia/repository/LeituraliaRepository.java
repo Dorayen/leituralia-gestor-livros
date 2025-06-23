@@ -1,4 +1,4 @@
-package com.biblioteca.leituralia;
+package com.biblioteca.leituralia.repository;
 
 import com.biblioteca.leituralia.entity.Livro;
 import org.springframework.data.jpa.repository.JpaRepository;

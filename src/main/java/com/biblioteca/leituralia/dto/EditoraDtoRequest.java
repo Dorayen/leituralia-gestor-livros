@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EditoraDtoRequest {
+    private Long id;
     private String nome;
     private String cidade;
 }

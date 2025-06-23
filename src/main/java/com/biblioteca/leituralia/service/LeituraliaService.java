@@ -1,10 +1,11 @@
-package com.biblioteca.leituralia;
+package com.biblioteca.leituralia.service;
 
 import com.biblioteca.leituralia.dto.LivroDtoRequest;
 import com.biblioteca.leituralia.dto.LivroDtoResponse;
 import com.biblioteca.leituralia.entity.Livro;
 import com.biblioteca.leituralia.exception.LivroJaCadastradoException;
 import com.biblioteca.leituralia.exception.LivroNaoEcontradoException;
+import com.biblioteca.leituralia.repository.LeituraliaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
