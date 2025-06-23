@@ -1,51 +1,78 @@
 package com.biblioteca.leituralia;
 
+import com.biblioteca.leituralia.dto.LivroDtoRequest;
+import com.biblioteca.leituralia.dto.LivroDtoResponse;
+import com.biblioteca.leituralia.entity.Livro;
 import com.biblioteca.leituralia.exception.LivroJaCadastradoException;
 import com.biblioteca.leituralia.exception.LivroNaoEcontradoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class LeituraliaService {
-    private final LeituraliaRepository repository;
+    private final LeituraliaRepository livroRepository;
 
 
-    public Livro salvar(Livro livro) {
-        if (livro.getId() != null && repository.existsById(livro.getId())) {
+    public LivroDtoResponse salvar(LivroDtoRequest dtoRequest) {
+        if (dtoRequest.getId() != null && livroRepository.existsById(dtoRequest.getId())) {
             throw new LivroJaCadastradoException("Livro já foi cadastrado");
         }
 
-        return repository.save(livro);
-    }
-    public Livro buscarLivroPorID(Long id) {
-        Optional<Livro> livroOptional = repository.findById(id);
-        if (!livroOptional.isEmpty()) {
-            return livroOptional.get();
-        } else {
-            throw new LivroNaoEcontradoException("Usuário não encontrado");
-        }
-    }
-
-    public List<Livro> listarTodos() {
-        return repository.findAll();
+        Livro livro = Livro.builder()
+                .titulo(dtoRequest.getTitulo())
+                .autor(dtoRequest.getAutor())
+                .categoria(dtoRequest.getCategoria())
+                .anoPublicacao(dtoRequest.getAnoPublicacao())
+                .dataCadastro(LocalDateTime.now())
+                .build();
+        Livro salvo = livroRepository.save(livro);
+        return toDtoResponse(salvo);
     }
 
-    public Livro atualizarLivro(Long id, Livro livro) {
-        Livro existente = buscarLivroPorID(id);
+    private LivroDtoResponse toDtoResponse(Livro livro) {
+        return LivroDtoResponse.builder()
+                .id(livro.getId())
+                .titulo(livro.getTitulo())
+                .autor(livro.getAutor())
+                .categoria(livro.getCategoria())
+                .anoPublicacao(livro.getAnoPublicacao())
+                .build();
+    }
 
-        existente.setTitulo(livro.getTitulo());
-        existente.setAutor(livro.getAutor());
-        existente.setCategoria(livro.getCategoria());
-        existente.setAnoPublicacao(livro.getAnoPublicacao());
+    public LivroDtoResponse buscarLivroPorID(Long id) {
+        Livro livroEncontrado = livroRepository.findById(id).orElseThrow(() -> new LivroNaoEcontradoException("livro não encontrado"));
+        return toDtoResponse(livroEncontrado);
+    }
 
-        return repository.save(existente);
+    public List<LivroDtoResponse> listarTodos() {
+        return livroRepository.findAll()
+                .stream()
+                .map(this::toDtoResponse)
+                .collect(Collectors.toList());
+    }
+
+    public LivroDtoResponse atualizarLivro(Long id, LivroDtoRequest dtoRequest) {
+        Livro existente = livroRepository.findById(id)
+                .orElseThrow(() -> new LivroNaoEcontradoException("Livro não encontrado"));
+
+
+        existente.setTitulo(dtoRequest.getTitulo());
+        existente.setAutor(dtoRequest.getAutor());
+        existente.setCategoria(dtoRequest.getCategoria());
+        existente.setAnoPublicacao(dtoRequest.getAnoPublicacao());
+        existente.setDataAtualizacao(LocalDateTime.now());
+        Livro atualizado = livroRepository.save(existente);
+
+        return toDtoResponse(atualizado);
     }
 
     public void deletarLivro(Long id) {
-        repository.deleteById(id);
+        livroRepository.deleteById(id);
     }
+
 }

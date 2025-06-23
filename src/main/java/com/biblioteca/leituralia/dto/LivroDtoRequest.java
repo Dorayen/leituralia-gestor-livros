@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LivroDtoRequest {
+    private Long id;
     private String titulo;
     private String autor;
     private String categoria;
