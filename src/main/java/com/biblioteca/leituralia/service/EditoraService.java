@@ -4,9 +4,13 @@ import com.biblioteca.leituralia.dto.EditoraDtoRequest;
 import com.biblioteca.leituralia.dto.EditoraDtoResponse;
 import com.biblioteca.leituralia.entity.Editora;
 import com.biblioteca.leituralia.exception.EditoraJaCadastradaException;
+import com.biblioteca.leituralia.exception.EditoraNaoEncontradaException;
 import com.biblioteca.leituralia.repository.EditoraRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,5 +35,18 @@ public class EditoraService {
                 .nome(editoraCadastrada.getNome())
                 .cidade(editoraCadastrada.getCidade())
                 .build();
+    }
+
+    public EditoraDtoResponse buscarEditoraPorId(Long id) {
+        Editora editoraEncontrada = repository.findById(id).orElseThrow(()->
+        new EditoraNaoEncontradaException("Editora não encontrada"));
+        return toDtoResponse(editoraEncontrada);
+    }
+
+    public List<EditoraDtoResponse> listarTodos() {
+        return repository.findAll()
+                .stream()
+                .map(this::toDtoResponse)
+                .collect(Collectors.toList());
     }
 }
