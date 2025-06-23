@@ -60,4 +60,8 @@ public class EditoraService {
         Editora atualizada = repository.save(existente);
         return toDtoResponse(atualizada);
     }
+
+    public void deletarEditora(Long id) {
+        repository.deleteById(id);
+    }
 }

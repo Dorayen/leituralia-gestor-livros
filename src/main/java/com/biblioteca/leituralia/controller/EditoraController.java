@@ -36,5 +36,10 @@ public class EditoraController {
         EditoraDtoResponse editoraAtualizada= service.atualizarEditora(id,dtoRequest);
         return ResponseEntity.ok(editoraAtualizada);
     }
-    
+   @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarEditora(@PathVariable Long id){
+        service.deletarEditora(id);
+        return ResponseEntity.noContent().build();
+   }
+
 }
