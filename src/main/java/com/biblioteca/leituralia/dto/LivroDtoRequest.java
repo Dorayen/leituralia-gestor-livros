@@ -15,6 +15,7 @@ public class LivroDtoRequest {
     private String autor;
     private String categoria;
     private String anoPublicacao;
+    private EditoraDtoRequest editora;
 
 
 }
