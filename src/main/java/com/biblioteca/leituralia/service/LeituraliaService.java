@@ -7,6 +7,7 @@ import com.biblioteca.leituralia.entity.Livro;
 import com.biblioteca.leituralia.exception.EditoraNaoEncontradaException;
 import com.biblioteca.leituralia.exception.LivroJaCadastradoException;
 import com.biblioteca.leituralia.exception.LivroNaoEcontradoException;
+import com.biblioteca.leituralia.mapper.LivroMapper;
 import com.biblioteca.leituralia.repository.EditoraRepository;
 import com.biblioteca.leituralia.repository.LeituraliaRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,36 +22,24 @@ import java.util.stream.Collectors;
 public class LeituraliaService {
     private final LeituraliaRepository livroRepository;
     private final EditoraRepository editoraRepository;
+    private final LivroMapper mapper;
 
 
     public LivroDtoResponse salvar(LivroDtoRequest dtoRequest) {
-        if (dtoRequest.getId() != null && livroRepository.existsById(dtoRequest.getId())) {
+        if (dtoRequest.getId() != null && livroRepository.existsByTituloIgnoreCaseAndAutorIgnoreCase(dtoRequest.getTitulo(), dtoRequest.getAutor())) {
             throw new LivroJaCadastradoException("Livro já foi cadastrado");
         }
 
-        Editora editora = editoraRepository.findById(dtoRequest.getEditora().getId())
+        Editora editora = editoraRepository.findFirstByNome(dtoRequest.getEditora().getNome())
                 .orElseThrow(() -> new EditoraNaoEncontradaException("Editora não encontrada"));
 
-        Livro livro = Livro.builder()
-                .titulo(dtoRequest.getTitulo())
-                .autor(dtoRequest.getAutor())
-                .categoria(dtoRequest.getCategoria())
-                .anoPublicacao(dtoRequest.getAnoPublicacao())
-                .dataCadastro(LocalDateTime.now())
-                .editora(editora)
-                .build();
-        Livro salvo = livroRepository.save(livro);
-        return toDtoResponse(salvo);
+        Livro salvo = mapper.toEntity(dtoRequest);
+        salvo.setEditora(editora);
+        return mapper.toDtoResponse(livroRepository.save(salvo));
     }
 
     private LivroDtoResponse toDtoResponse(Livro livro) {
-        return LivroDtoResponse.builder()
-                .id(livro.getId())
-                .titulo(livro.getTitulo())
-                .autor(livro.getAutor())
-                .categoria(livro.getCategoria())
-                .anoPublicacao(livro.getAnoPublicacao())
-                .build();
+        return mapper.toDtoResponse(livro);
     }
 
     public LivroDtoResponse buscarLivroPorID(Long id) {
@@ -66,10 +55,10 @@ public class LeituraliaService {
     }
 
     public LivroDtoResponse atualizarLivro(Long id, LivroDtoRequest dtoRequest) {
-        Livro existente = livroRepository.findById(id)
-                .orElseThrow(() -> new LivroNaoEcontradoException("Livro não encontrado"));
+        Livro existente = livroRepository.findByTituloIgnoreCaseAndAutorIgnoreCase(dtoRequest.getTitulo(), dtoRequest.getAutor())
+                .orElseThrow(() -> new LivroNaoEcontradoException("Livro não encontrado com esse título e autor"));
 
-        Editora editora = editoraRepository.findById(dtoRequest.getEditora().getId())
+        Editora editora = editoraRepository.findFirstByNome(dtoRequest.getEditora().getNome())
                 .orElseThrow(() -> new EditoraNaoEncontradaException("Editora não encontrada"));
 
         existente.setTitulo(dtoRequest.getTitulo());
